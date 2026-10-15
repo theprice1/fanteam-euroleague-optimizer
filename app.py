@@ -506,7 +506,11 @@ def generate_lineups(
 
     for n in range(num_lineups):
         prob = pulp.LpProblem(f"FanTeam_EuroLeague_Lineup_{n + 1}", pulp.LpMaximize)
-        player_vars = pulp.LpVariable.dicts("Player", data.index, cat=pulp.LpBinary)
+
+        # Compatible variable declaration for all PuLP versions
+        player_vars = {
+            i: pulp.LpVariable(f"Player_{i}", cat=pulp.LpBinary) for i in data.index
+        }
 
         if randomness > 0 and n > 0:
             jitter = np.random.normal(1.0, randomness, size=len(data))
